@@ -106,9 +106,10 @@ docs/wiki/            # Документация (синхронизируетс
 
 ## Secrets для GitHub Actions
 
-| Secret              | Где взять                                                    |
-| ------------------- | ------------------------------------------------------------ |
-| `WIKI_TOKEN`        | GitHub → Settings → Developer settings → PAT (scope: `repo`) |
-| `VERCEL_TOKEN`      | vercel.com → Settings → Tokens                               |
-| `VERCEL_ORG_ID`     | `vercel env pull` или Vercel dashboard                       |
-| `VERCEL_PROJECT_ID` | `vercel env pull` или Vercel dashboard                       |
+| Secret              | Где взять                              |
+| ------------------- | -------------------------------------- |
+| `VERCEL_TOKEN`      | vercel.com → Settings → Tokens         |
+| `VERCEL_ORG_ID`     | `vercel env pull` или Vercel dashboard |
+| `VERCEL_PROJECT_ID` | `vercel env pull` или Vercel dashboard |
+
+> Wiki sync использует встроенный `GITHUB_TOKEN` — отдельный секрет не нужен (работает для публичных репо).

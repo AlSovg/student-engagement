@@ -10,6 +10,8 @@ jobs:
   sync:
     name: Sync docs/wiki → GitHub Wiki
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +21,7 @@ jobs:
         with:
           repository: ${{ github.repository }}.wiki
           path: wiki
-          token: ${{ secrets.WIKI_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Copy wiki pages
         run: cp -r docs/wiki/. wiki/
