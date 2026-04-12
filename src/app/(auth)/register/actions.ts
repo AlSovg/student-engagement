@@ -4,10 +4,7 @@ import { db } from "@/lib/db";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 
-export async function registerUser(
-  _prevState: { error?: string },
-  formData: FormData
-) {
+export async function registerUser(_prevState: { error?: string }, formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;

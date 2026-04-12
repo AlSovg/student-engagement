@@ -28,32 +28,34 @@ email=user@example.com&password=secret&csrfToken=...
 
 ## Пользователи
 
-### `POST /api/auth/register` *(Server Action)*
+### `POST /api/auth/register` _(Server Action)_
 
 Регистрация через `src/app/(auth)/register/actions.ts`.
 
 **Тело запроса (FormData):**
 
-| Поле | Тип | Обязательно |
-|------|-----|-------------|
-| `name` | string | ✅ |
-| `email` | string (email) | ✅ |
-| `password` | string (min 8) | ✅ |
-| `role` | `STUDENT` \| `TEACHER` | ✅ |
+| Поле       | Тип                    | Обязательно |
+| ---------- | ---------------------- | ----------- |
+| `name`     | string                 | ✅          |
+| `email`    | string (email)         | ✅          |
+| `password` | string (min 8)         | ✅          |
+| `role`     | `STUDENT` \| `TEACHER` | ✅          |
 
 **Ответ:**
+
 - Успех → redirect `/login`
 - Ошибка → `{ error: string }`
 
 ---
 
-## Активность *(v0.2.0)*
+## Активность _(v0.2.0)_
 
 ### `GET /api/activities`
 
 Список активностей текущего пользователя.
 
 **Query params:**
+
 - `courseId` — фильтр по курсу
 - `from`, `to` — диапазон дат (ISO 8601)
 
@@ -73,7 +75,7 @@ email=user@example.com&password=secret&csrfToken=...
 
 ---
 
-## Вовлеченность *(v0.3.0)*
+## Вовлеченность _(v0.3.0)_
 
 ### `GET /api/engagement/[userId]`
 
@@ -82,6 +84,7 @@ email=user@example.com&password=secret&csrfToken=...
 **Query params:** `courseId`, `period` (YYYY-MM-DD)
 
 **Ответ:**
+
 ```json
 {
   "data": {

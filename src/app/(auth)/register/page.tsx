@@ -2,7 +2,14 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -21,9 +28,7 @@ export default function RegisterPage() {
       </CardHeader>
       <form action={action}>
         <CardContent className="space-y-4">
-          {state?.error && (
-            <p className="text-sm text-red-500">{state.error}</p>
-          )}
+          {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
           <div className="space-y-1">
             <Label htmlFor="name">Имя</Label>
             <Input id="name" name="name" required />
@@ -42,7 +47,7 @@ export default function RegisterPage() {
               id="role"
               name="role"
               defaultValue="STUDENT"
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              className="w-full rounded-md border px-3 py-2 text-sm"
             >
               <option value="STUDENT">Студент</option>
               <option value="TEACHER">Преподаватель</option>

@@ -13,6 +13,7 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 ## [0.1.0] — 2026-04-12
 
 ### Added
+
 - Project scaffold: Next.js 16, TypeScript, Tailwind CSS v4, shadcn/ui
 - Prisma 7 schema: User, Course, Enrollment, Activity, EngagementScore + NextAuth tables
 - Prisma adapter-pg (driver adapter) + `src/lib/db.ts` singleton
@@ -31,8 +32,8 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 ## Roadmap
 
 | Version | Milestone                          |
-|---------|------------------------------------|
-| v0.1.0  | ✅ Project setup + Authentication   |
+| ------- | ---------------------------------- |
+| v0.1.0  | ✅ Project setup + Authentication  |
 | v0.2.0  | Activity data generation / import  |
 | v0.3.0  | Engagement score calculation       |
 | v0.4.0  | Teacher dashboard with charts      |

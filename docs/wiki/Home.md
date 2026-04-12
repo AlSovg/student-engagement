@@ -10,20 +10,20 @@
 
 ## Стек
 
-| Слой | Технология |
-|------|-----------|
-| Frontend + Backend | Next.js 16 (App Router) |
-| База данных | PostgreSQL + Prisma 7 |
-| Аутентификация | NextAuth.js v5 |
-| UI | Tailwind CSS v4 + shadcn/ui |
-| Язык | TypeScript |
+| Слой               | Технология                  |
+| ------------------ | --------------------------- |
+| Frontend + Backend | Next.js 16 (App Router)     |
+| База данных        | PostgreSQL + Prisma 7       |
+| Аутентификация     | NextAuth.js v5              |
+| UI                 | Tailwind CSS v4 + shadcn/ui |
+| Язык               | TypeScript                  |
 
 ## Версии
 
-| Версия | Описание | Статус |
-|--------|----------|--------|
-| v0.1.0 | Project setup + Auth | ✅ Released |
-| v0.2.0 | Activity data generation | 🔄 In progress |
-| v0.3.0 | Engagement score calculation | ⏳ Planned |
-| v0.4.0 | Teacher dashboard | ⏳ Planned |
-| v0.5.0 | Student profile | ⏳ Planned |
+| Версия | Описание                     | Статус         |
+| ------ | ---------------------------- | -------------- |
+| v0.1.0 | Project setup + Auth         | ✅ Released    |
+| v0.2.0 | Activity data generation     | 🔄 In progress |
+| v0.3.0 | Engagement score calculation | ⏳ Planned     |
+| v0.4.0 | Teacher dashboard            | ⏳ Planned     |
+| v0.5.0 | Student profile              | ⏳ Planned     |

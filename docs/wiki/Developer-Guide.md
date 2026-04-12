@@ -55,15 +55,17 @@ npm run dev
 
 ## Полезные команды
 
-| Команда | Описание |
-|---------|----------|
-| `npm run dev` | Dev-сервер с Turbopack |
-| `npm run build` | Production сборка |
-| `npm run lint` | ESLint |
-| `npx tsc --noEmit` | TypeScript проверка |
-| `npx prisma studio` | GUI для БД |
-| `npx prisma migrate dev --name <name>` | Новая миграция |
-| `npx prisma generate` | Регенерация клиента |
+| Команда                                | Описание                           |
+| -------------------------------------- | ---------------------------------- |
+| `npm run dev`                          | Dev-сервер с Turbopack             |
+| `npm run build`                        | Production сборка                  |
+| `npm run lint`                         | ESLint                             |
+| `npm run format`                       | Prettier — форматировать всё       |
+| `npm run format:check`                 | Prettier — проверить без изменений |
+| `npx tsc --noEmit`                     | TypeScript проверка                |
+| `npx prisma studio`                    | GUI для БД                         |
+| `npx prisma migrate dev --name <name>` | Новая миграция                     |
+| `npx prisma generate`                  | Регенерация клиента                |
 
 ---
 
@@ -104,9 +106,9 @@ docs/wiki/            # Документация (синхронизируетс
 
 ## Secrets для GitHub Actions
 
-| Secret | Где взять |
-|--------|-----------|
-| `WIKI_TOKEN` | GitHub → Settings → Developer settings → PAT (scope: `repo`) |
-| `VERCEL_TOKEN` | vercel.com → Settings → Tokens |
-| `VERCEL_ORG_ID` | `vercel env pull` или Vercel dashboard |
-| `VERCEL_PROJECT_ID` | `vercel env pull` или Vercel dashboard |
+| Secret              | Где взять                                                    |
+| ------------------- | ------------------------------------------------------------ |
+| `WIKI_TOKEN`        | GitHub → Settings → Developer settings → PAT (scope: `repo`) |
+| `VERCEL_TOKEN`      | vercel.com → Settings → Tokens                               |
+| `VERCEL_ORG_ID`     | `vercel env pull` или Vercel dashboard                       |
+| `VERCEL_PROJECT_ID` | `vercel env pull` или Vercel dashboard                       |
