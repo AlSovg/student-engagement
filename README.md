@@ -34,13 +34,12 @@
 - 📝 Регистрация с выбором роли
 - 🛡️ Защита маршрутов (proxy middleware)
 
-**v0.2.0 — в работе:**
+**v0.2.0 — v0.5.0 — готово:**
 
 - 🌱 Seed тестовых данных (1 преподаватель, 5 студентов, 2 курса, активность за 4 недели)
-
-**Планируется:**
-
-- 📊 Импорт реальных данных активности (v0.2.0)
+- 🧮 Расчёт индекса вовлечённости по взвешенной формуле + API пересчёта
+- 📊 Дашборд преподавателя: карточки, график динамики, таблица студентов
+- 👤 Профиль студента: индексы по курсам, 8-недельный график, история активности
 - 🧮 Расчёт индекса вовлеченности по формуле (v0.3.0)
 - 📈 Дашборд преподавателя с графиками (v0.4.0)
 - 👤 Профиль студента с историей активности (v0.5.0)
@@ -112,13 +111,13 @@ docs/wiki/                # Документация → GitHub Wiki
 
 ## 📋 Roadmap
 
-| Версия | Этап                               | Статус         |
-| ------ | ---------------------------------- | -------------- |
-| v0.1.0 | Project setup + Authentication     | ✅ Released    |
-| v0.2.0 | Activity data generation           | 🔄 In progress |
-| v0.3.0 | Engagement score calculation       | ⏳ Planned     |
-| v0.4.0 | Teacher dashboard with charts      | ⏳ Planned     |
-| v0.5.0 | Student profile + activity history | ⏳ Planned     |
+| Версия | Этап                               | Статус      |
+| ------ | ---------------------------------- | ----------- |
+| v0.1.0 | Project setup + Authentication     | ✅ Released |
+| v0.2.0 | Activity data generation           | ✅ Released |
+| v0.3.0 | Engagement score calculation       | ✅ Released |
+| v0.4.0 | Teacher dashboard with charts      | ✅ Released |
+| v0.5.0 | Student profile + activity history | ✅ Released |
 
 ## 📖 Документация
 

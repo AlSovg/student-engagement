@@ -6,7 +6,65 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ---
 
-## [Unreleased] — v0.2.0
+## [Unreleased]
+
+---
+
+## [0.5.0] — 2026-04-13
+
+### Added
+
+- Страница `/students/[id]` — профиль студента (только для teacher)
+- Карточки текущего индекса вовлечённости по каждому курсу с уровневым бейджем
+- График динамики за 8 недель (`ScoreChart` + `ScoreChartWrapper`)
+- Таблица истории активности за последние 4 недели (60 записей, тип на русском)
+- Имена студентов в дашборде — кликабельные ссылки на профиль
+
+### Fixed
+
+- SSL deprecation warning от `pg` — `sslmode=require` → `sslmode=verify-full` в `db.ts` и `seed.ts`
+- `next dev --no-turbopack` → `--webpack` (корректный флаг для Next.js 16)
+
+---
+
+## [0.4.0] — 2026-04-13
+
+### Added
+
+- Дашборд преподавателя: сводные карточки (студентов, средний индекс, распределение по уровням)
+- График динамики вовлечённости за 4 недели (recharts LineChart, по курсам)
+- Таблица студентов с последним индексом по каждому курсу и уровневыми бейджами
+- Кнопка «Пересчитать индексы» — вызывает `POST /api/engagement/recalculate`, обновляет страницу
+- `src/components/dashboard/engagement-chart.tsx` — client-компонент графика
+- `src/components/dashboard/recalculate-button.tsx` — client-компонент кнопки
+
+### Fixed
+
+- recharts SSR: `dynamic({ ssr: false })` вынесен в `EngagementChartWrapper` ("use client")
+- Turbopack + Tailwind CSS v4 конфликт — переключён на webpack
+
+---
+
+## [0.3.0] — 2026-04-13
+
+### Added
+
+- `src/lib/engagement.ts`: расчёт индекса вовлечённости (0–100) по формуле из Engagement-Algorithm.md
+- `calculateScore()` — чистая функция по весам и порогам насыщения
+- `recalculateScores()` — пересчёт и запись в таблицу `EngagementScore`
+- `getEngagementLevel()` / `LEVEL_LABELS` — интерпретация результата
+- `POST /api/engagement/recalculate` — endpoint пересчёта (только teacher)
+
+---
+
+## [0.2.0] — 2026-04-12
+
+### Added
+
+- `prisma/seed.ts`: 1 преподаватель, 5 студентов, 2 курса, активность за 4 недели, EngagementScore
+- Seed зарегистрирован в `prisma.config.ts` (`migrations.seed`)
+- `dev`-ветка как интеграционная база для фичей
+- Branching strategy описана в Developer Guide
 
 ---
 
@@ -31,10 +89,10 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ## Roadmap
 
-| Version | Milestone                          |
-| ------- | ---------------------------------- |
-| v0.1.0  | ✅ Project setup + Authentication  |
-| v0.2.0  | Activity data generation / import  |
-| v0.3.0  | Engagement score calculation       |
-| v0.4.0  | Teacher dashboard with charts      |
-| v0.5.0  | Student profile + activity history |
+| Version | Milestone                             |
+| ------- | ------------------------------------- |
+| v0.1.0  | ✅ Project setup + Authentication     |
+| v0.2.0  | ✅ Activity data generation           |
+| v0.3.0  | ✅ Engagement score calculation       |
+| v0.4.0  | ✅ Teacher dashboard with charts      |
+| v0.5.0  | ✅ Student profile + activity history |

@@ -114,12 +114,29 @@ docs/wiki/            # Документация (синхронизируетс
 
 ## Workflow разработки
 
-1. Создать ветку: `git checkout -b feat/feature-name`
+### Структура веток
+
+```
+main         ← продакшн (Vercel автодеплой)
+└── dev      ← интеграционная ветка
+    ├── feat/...   ← новые фичи
+    └── fix/...    ← баг-фиксы
+```
+
+### Цикл фичи
+
+1. Создать ветку от `dev`: `git checkout dev && git checkout -b feat/feature-name`
 2. Разработать фичу
-3. Убедиться в чистоте TS: `npx tsc --noEmit`
+3. Проверить: `npx tsc --noEmit` и `npm run format:check`
 4. Commit: `git commit -m "feat: описание"`
-5. Push + PR → CI проверит типы и lint
-6. Merge в main → автодеплой на Vercel + обновление Wiki
+5. Push + открыть PR в `dev` → CI проверит типы, lint и формат
+6. После ревью — merge в `dev`
+
+### Релиз версии
+
+1. Открыть PR `dev → main`
+2. Обновить `CHANGELOG.md`: `[Unreleased]` → версия с датой
+3. Merge → Vercel деплоит + Wiki обновляется
 
 ---
 
