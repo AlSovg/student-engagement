@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Student Engagement Monitor
 
-## Getting Started
+[![CI](https://github.com/AlSovg/student-engagement/actions/workflows/ci.yml/badge.svg)](https://github.com/AlSovg/student-engagement/actions/workflows/ci.yml)
+[![Deploy](https://therealsujitk-vercel-badge.vercel.app/?app=student-engagement)](https://student-engagement.vercel.app)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 
-First, run the development server:
+Система мониторинга вовлеченности студентов на основе анализа цифрового следа. Отслеживает активность студентов на учебной платформе и визуализирует уровень их вовлеченности для преподавателей.
+
+> Учебный проект · Магистратура · Информационные системы и технологии
+
+## 🌐 Live Demo
+
+**[student-engagement.vercel.app](https://student-engagement.vercel.app)**
+
+## 🛠 Стек
+
+| Слой               | Технология                                                                      |
+| ------------------ | ------------------------------------------------------------------------------- |
+| Frontend + Backend | [Next.js 16](https://nextjs.org) · App Router · Server Actions                  |
+| База данных        | [PostgreSQL](https://postgresql.org) · [Neon](https://neon.tech) (serverless)   |
+| ORM                | [Prisma 7](https://prisma.io) · Driver Adapter                                  |
+| Аутентификация     | [NextAuth.js v5](https://authjs.dev) · JWT · Credentials                        |
+| UI                 | [Tailwind CSS v4](https://tailwindcss.com) · [shadcn/ui](https://ui.shadcn.com) |
+| Язык               | TypeScript 5                                                                    |
+| Деплой             | [Vercel](https://vercel.com)                                                    |
+| CI                 | GitHub Actions                                                                  |
+
+## ✨ Возможности
+
+**v0.1.0 — готово:**
+
+- 🔐 Аутентификация (студент / преподаватель)
+- 📝 Регистрация с выбором роли
+- 🛡️ Защита маршрутов (proxy middleware)
+
+**Планируется:**
+
+- 📊 Генерация и импорт данных активности (v0.2.0)
+- 🧮 Расчёт индекса вовлеченности по формуле (v0.3.0)
+- 📈 Дашборд преподавателя с графиками (v0.4.0)
+- 👤 Профиль студента с историей активности (v0.5.0)
+
+## 🚀 Быстрый старт
+
+### Требования
+
+- Node.js ≥ 20
+- PostgreSQL ≥ 15 (или аккаунт [Neon](https://neon.tech))
+
+### Установка
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Клонировать репозиторий
+git clone https://github.com/AlSovg/student-engagement.git
+cd student-engagement
+
+# 2. Установить зависимости
+npm install
+
+# 3. Настроить переменные окружения
+cp .env.example .env
+# Заполнить DATABASE_URL, AUTH_SECRET, AUTH_URL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Переменные окружения
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+DATABASE_URL="postgresql://user:password@host/db?sslmode=require"
+AUTH_SECRET="..."   # npx auth secret
+AUTH_URL="http://localhost:3000"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Запуск
 
-## Learn More
+```bash
+# Применить миграции БД
+npx prisma migrate dev
 
-To learn more about Next.js, take a look at the following resources:
+# Запустить dev-сервер
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Открыть [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Структура проекта
 
-## Deploy on Vercel
+```
+src/
+├── app/
+│   ├── (auth)/           # Login, Register
+│   ├── dashboard/        # Дашборд преподавателя
+│   ├── students/         # Профили студентов (v0.5.0)
+│   └── api/auth/         # NextAuth handlers
+├── components/ui/        # shadcn/ui компоненты
+├── lib/
+│   ├── auth.ts           # NextAuth конфиг
+│   └── db.ts             # Prisma singleton
+├── types/                # TypeScript расширения
+└── proxy.ts              # Route protection
+prisma/
+└── schema.prisma         # Схема БД
+docs/wiki/                # Документация → GitHub Wiki
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📋 Roadmap
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Версия | Этап                               | Статус         |
+| ------ | ---------------------------------- | -------------- |
+| v0.1.0 | Project setup + Authentication     | ✅ Released    |
+| v0.2.0 | Activity data generation           | 🔄 In progress |
+| v0.3.0 | Engagement score calculation       | ⏳ Planned     |
+| v0.4.0 | Teacher dashboard with charts      | ⏳ Planned     |
+| v0.5.0 | Student profile + activity history | ⏳ Planned     |
+
+## 📖 Документация
+
+Полная документация в [GitHub Wiki](https://github.com/AlSovg/student-engagement/wiki):
+
+- [API Documentation](https://github.com/AlSovg/student-engagement/wiki/API-Documentation)
+- [Engagement Algorithm](https://github.com/AlSovg/student-engagement/wiki/Engagement-Algorithm)
+- [Developer Guide](https://github.com/AlSovg/student-engagement/wiki/Developer-Guide)
