@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { getEngagementLevel, LEVEL_LABELS, type EngagementLevel } from "@/lib/engagement";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -225,7 +226,12 @@ export default async function DashboardPage() {
                   students.map((student) => (
                     <tr key={student.id} className="hover:bg-muted/30 border-b last:border-0">
                       <td className="px-4 py-3">
-                        <p className="font-medium">{student.name}</p>
+                        <Link
+                          href={`/students/${student.id}`}
+                          className="font-medium hover:underline"
+                        >
+                          {student.name}
+                        </Link>
                         <p className="text-muted-foreground text-xs">{student.email}</p>
                       </td>
                       {courses.map((c) => {
