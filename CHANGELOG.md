@@ -6,6 +6,19 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ---
 
+## [Unreleased] — v0.4.0
+
+### Added
+
+- Дашборд преподавателя: сводные карточки (студентов, средний индекс, распределение по уровням)
+- График динамики вовлечённости за 4 недели (recharts LineChart, по курсам)
+- Таблица студентов с последним индексом по каждому курсу и уровневыми бейджами
+- Кнопка «Пересчитать индексы» — вызывает POST /api/engagement/recalculate, обновляет страницу
+- `src/components/dashboard/engagement-chart.tsx` — client-компонент графика
+- `src/components/dashboard/recalculate-button.tsx` — client-компонент кнопки
+
+---
+
 ## [Unreleased] — v0.3.0
 
 ### Added
