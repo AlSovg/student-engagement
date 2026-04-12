@@ -43,7 +43,24 @@ AUTH_URL="http://localhost:3000"
 npx prisma migrate dev
 ```
 
-### 5. Запустить dev-сервер
+### 5. Заполнить БД тестовыми данными
+
+```bash
+npx prisma db seed
+```
+
+| Email                     | Пароль      | Роль          |
+| ------------------------- | ----------- | ------------- |
+| `teacher@university.edu`  | password123 | Преподаватель |
+| `student1@university.edu` | password123 | Студент       |
+| `student2@university.edu` | password123 | Студент       |
+| `student3@university.edu` | password123 | Студент       |
+| `student4@university.edu` | password123 | Студент       |
+| `student5@university.edu` | password123 | Студент       |
+
+Seed идемпотентен — повторный запуск не дублирует данные.
+
+### 6. Запустить dev-сервер
 
 ```bash
 npm run dev
@@ -63,6 +80,7 @@ npm run dev
 | `npm run format`                       | Prettier — форматировать всё       |
 | `npm run format:check`                 | Prettier — проверить без изменений |
 | `npx tsc --noEmit`                     | TypeScript проверка                |
+| `npx prisma db seed`                   | Заполнить БД тестовыми данными     |
 | `npx prisma studio`                    | GUI для БД                         |
 | `npx prisma migrate dev --name <name>` | Новая миграция                     |
 | `npx prisma generate`                  | Регенерация клиента                |
@@ -88,6 +106,7 @@ src/
   proxy.ts            # Route protection (Next.js 16)
 prisma/
   schema.prisma       # Схема БД
+  seed.ts             # Тестовые данные
 docs/wiki/            # Документация (синхронизируется с GitHub Wiki)
 ```
 
