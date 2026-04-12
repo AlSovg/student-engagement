@@ -6,7 +6,26 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ---
 
-## [Unreleased] — v0.2.0
+## [Unreleased] — v0.3.0
+
+### Added
+
+- `src/lib/engagement.ts`: расчёт индекса вовлеченности (0–100) по формуле из Engagement-Algorithm.md
+- `calculateScore()` — чистая функция по весам и порогам насыщения
+- `recalculateScores()` — пересчёт и запись в таблицу EngagementScore
+- `getEngagementLevel()` / `LEVEL_LABELS` — интерпретация результата
+- `POST /api/engagement/recalculate` — endpoint пересчёта (только teacher)
+
+---
+
+## [0.2.0] — 2026-04-12
+
+### Added
+
+- `prisma/seed.ts`: 1 преподаватель, 5 студентов, 2 курса, активность за 4 недели, EngagementScore
+- Seed зарегистрирован в `prisma.config.ts` (`migrations.seed`)
+- `dev`-ветка как интеграционная база для фичей
+- Branching strategy описана в Developer Guide
 
 ---
 
