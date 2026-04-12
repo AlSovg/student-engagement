@@ -20,8 +20,8 @@
 
 ## Версии
 
-| Версия | Описание                     | Статус         |
-| ------ | ---------------------------- | -------------- |
+| Версия | Описание                     | Статус      |
+| ------ | ---------------------------- | ----------- |
 | v0.1.0 | Project setup + Auth         | ✅ Released |
 | v0.2.0 | Activity data generation     | ✅ Released |
 | v0.3.0 | Engagement score calculation | ✅ Released |
