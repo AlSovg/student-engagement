@@ -2,9 +2,15 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getEngagementLevel, LEVEL_LABELS, type EngagementLevel } from "@/lib/engagement";
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EngagementChart, type ChartPoint } from "@/components/dashboard/engagement-chart";
+import { type ChartPoint } from "@/components/dashboard/engagement-chart";
 import { RecalculateButton } from "@/components/dashboard/recalculate-button";
+
+const EngagementChart = dynamic(
+  () => import("@/components/dashboard/engagement-chart").then((m) => m.EngagementChart),
+  { ssr: false, loading: () => <div className="bg-muted h-[260px] animate-pulse rounded" /> }
+);
 
 // Цвета бейджей уровня
 const LEVEL_STYLE: Record<EngagementLevel, string> = {
