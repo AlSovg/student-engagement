@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartPoint } from "@/components/dashboard/engagement-chart";
 import { EngagementChartWrapper } from "@/components/dashboard/engagement-chart-wrapper";
 import { RecalculateButton } from "@/components/dashboard/recalculate-button";
+import { AppHeader } from "@/components/app-header";
 
 // Цвета бейджей уровня
 const LEVEL_STYLE: Record<EngagementLevel, string> = {
@@ -129,7 +130,9 @@ export default async function DashboardPage() {
   for (const s of students) levelCounts[getEngagementLevel(s.avgScore)]++;
 
   return (
-    <div className="space-y-6 p-8">
+    <>
+      <AppHeader name={session.user.name} email={session.user.email} />
+      <div className="space-y-6 p-8">
       {/* Заголовок */}
       <div className="flex items-center justify-between">
         <div>
@@ -263,5 +266,6 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
