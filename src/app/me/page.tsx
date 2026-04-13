@@ -87,94 +87,94 @@ export default async function MePage() {
     <>
       <AppHeader name={session.user.name} email={session.user.email} />
       <div className="space-y-6 p-8">
-      {/* Заголовок */}
-      <div>
-        <h1 className="text-2xl font-bold">{session.user.name ?? session.user.email}</h1>
-        <p className="text-muted-foreground text-sm">{session.user.email}</p>
-      </div>
+        {/* Заголовок */}
+        <div>
+          <h1 className="text-2xl font-bold">{session.user.name ?? session.user.email}</h1>
+          <p className="text-muted-foreground text-sm">{session.user.email}</p>
+        </div>
 
-      {/* Текущие индексы по курсам */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {courses.map((course) => {
-          const entry = latestByCourse.get(course.id);
-          const score = entry?.score ?? null;
-          const level = score !== null ? getEngagementLevel(score) : null;
-          return (
-            <Card key={course.id}>
-              <CardHeader>
-                <CardTitle>{course.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {score !== null && level ? (
-                  <div className="flex items-end gap-3">
-                    <span className="text-4xl font-bold">{score}</span>
-                    <span className={`mb-1 rounded px-2 py-0.5 text-sm ${LEVEL_STYLE[level]}`}>
-                      {LEVEL_LABELS[level]}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-muted-foreground text-sm">Нет данных</span>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+        {/* Текущие индексы по курсам */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {courses.map((course) => {
+            const entry = latestByCourse.get(course.id);
+            const score = entry?.score ?? null;
+            const level = score !== null ? getEngagementLevel(score) : null;
+            return (
+              <Card key={course.id}>
+                <CardHeader>
+                  <CardTitle>{course.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {score !== null && level ? (
+                    <div className="flex items-end gap-3">
+                      <span className="text-4xl font-bold">{score}</span>
+                      <span className={`mb-1 rounded px-2 py-0.5 text-sm ${LEVEL_STYLE[level]}`}>
+                        {LEVEL_LABELS[level]}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">Нет данных</span>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
 
-      {/* График динамики */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Динамика вовлечённости (8 недель)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ScoreChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
-        </CardContent>
-      </Card>
+        {/* График динамики */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Динамика вовлечённости (8 недель)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScoreChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
+          </CardContent>
+        </Card>
 
-      {/* История активности */}
-      <Card>
-        <CardHeader>
-          <CardTitle>История активности (последние 4 недели)</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left">
-                  <th className="px-4 py-3 font-medium">Дата</th>
-                  <th className="px-4 py-3 font-medium">Тип</th>
-                  <th className="px-4 py-3 font-medium">Курс</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activities.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="text-muted-foreground px-4 py-6 text-center">
-                      Нет активности за последние 4 недели
-                    </td>
+        {/* История активности */}
+        <Card>
+          <CardHeader>
+            <CardTitle>История активности (последние 4 недели)</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left">
+                    <th className="px-4 py-3 font-medium">Дата</th>
+                    <th className="px-4 py-3 font-medium">Тип</th>
+                    <th className="px-4 py-3 font-medium">Курс</th>
                   </tr>
-                ) : (
-                  activities.map((a) => (
-                    <tr key={a.id} className="hover:bg-muted/30 border-b last:border-0">
-                      <td className="text-muted-foreground px-4 py-2.5">
-                        {a.createdAt.toLocaleDateString("ru-RU", {
-                          day: "numeric",
-                          month: "short",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                </thead>
+                <tbody>
+                  {activities.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="text-muted-foreground px-4 py-6 text-center">
+                        Нет активности за последние 4 недели
                       </td>
-                      <td className="px-4 py-2.5">{ACTIVITY_LABELS[a.type]}</td>
-                      <td className="text-muted-foreground px-4 py-2.5">{a.course.name}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                  ) : (
+                    activities.map((a) => (
+                      <tr key={a.id} className="hover:bg-muted/30 border-b last:border-0">
+                        <td className="text-muted-foreground px-4 py-2.5">
+                          {a.createdAt.toLocaleDateString("ru-RU", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </td>
+                        <td className="px-4 py-2.5">{ACTIVITY_LABELS[a.type]}</td>
+                        <td className="text-muted-foreground px-4 py-2.5">{a.course.name}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 }

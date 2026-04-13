@@ -13,11 +13,7 @@ export function AppHeader({ name, email }: AppHeaderProps) {
     <header className="border-b bg-white px-8 py-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700">{name ?? email}</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => signOut({ callbackUrl: "/login" })}
-        >
+        <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: "/login" })}>
           Выйти
         </Button>
       </div>
