@@ -12,7 +12,23 @@ export default auth((req) => {
   }
 
   if (req.auth && isPublic) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    const role = req.auth.user?.role;
+    const dest = role === "TEACHER" ? "/dashboard" : "/me";
+    return NextResponse.redirect(new URL(dest, req.url));
+  }
+
+  if (req.auth && pathname.startsWith("/me")) {
+    const role = req.auth.user?.role;
+    if (role === "TEACHER") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+  }
+
+  if (req.auth && pathname.startsWith("/dashboard")) {
+    const role = req.auth.user?.role;
+    if (role === "STUDENT") {
+      return NextResponse.redirect(new URL("/me", req.url));
+    }
   }
 });
 

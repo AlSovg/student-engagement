@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartPoint } from "@/components/dashboard/engagement-chart";
 import { EngagementChartWrapper } from "@/components/dashboard/engagement-chart-wrapper";
 import { RecalculateButton } from "@/components/dashboard/recalculate-button";
+import { AppHeader } from "@/components/app-header";
 
 // Цвета бейджей уровня
 const LEVEL_STYLE: Record<EngagementLevel, string> = {
@@ -129,139 +130,142 @@ export default async function DashboardPage() {
   for (const s of students) levelCounts[getEngagementLevel(s.avgScore)]++;
 
   return (
-    <div className="space-y-6 p-8">
-      {/* Заголовок */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Дашборд преподавателя</h1>
-          <p className="text-muted-foreground text-sm">{session.user.name}</p>
-        </div>
-        <RecalculateButton />
-      </div>
-
-      {/* Сводные карточки */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Студентов</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{totalStudents}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Средний индекс</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{avgScore}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Высокая / Средняя</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">
-              <span className="text-green-600">{levelCounts.high}</span>
-              <span className="text-muted-foreground mx-1 text-lg">/</span>
-              <span className="text-yellow-600">{levelCounts.medium}</span>
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Низкая / Критич.</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">
-              <span className="text-orange-600">{levelCounts.low}</span>
-              <span className="text-muted-foreground mx-1 text-lg">/</span>
-              <span className="text-red-600">{levelCounts.critical}</span>
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* График */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Динамика вовлечённости (последние 4 недели)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <EngagementChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
-        </CardContent>
-      </Card>
-
-      {/* Таблица студентов */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Студенты</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left">
-                  <th className="px-4 py-3 font-medium">Студент</th>
-                  {courses.map((c) => (
-                    <th key={c.id} className="px-4 py-3 font-medium">
-                      {c.name}
-                    </th>
-                  ))}
-                  <th className="px-4 py-3 font-medium">Средний</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={courses.length + 2}
-                      className="text-muted-foreground px-4 py-6 text-center"
-                    >
-                      Нет данных. Нажмите «Пересчитать индексы».
-                    </td>
-                  </tr>
-                ) : (
-                  students.map((student) => (
-                    <tr key={student.id} className="hover:bg-muted/30 border-b last:border-0">
-                      <td className="px-4 py-3">
-                        <Link
-                          href={`/students/${student.id}`}
-                          className="font-medium hover:underline"
-                        >
-                          {student.name}
-                        </Link>
-                        <p className="text-muted-foreground text-xs">{student.email}</p>
-                      </td>
-                      {courses.map((c) => {
-                        const entry = student.scores.find((s) => s.courseId === c.id);
-                        return (
-                          <td key={c.id} className="px-4 py-3">
-                            {entry ? (
-                              <div className="flex flex-col gap-1">
-                                <span className="font-medium">{entry.score}</span>
-                                <span
-                                  className={`w-fit rounded px-1.5 py-0.5 text-xs ${LEVEL_STYLE[entry.level]}`}
-                                >
-                                  {LEVEL_LABELS[entry.level]}
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="text-muted-foreground">—</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                      <td className="px-4 py-3 font-semibold">{student.avgScore.toFixed(1)}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+    <>
+      <AppHeader name={session.user.name} email={session.user.email} />
+      <div className="space-y-6 p-8">
+        {/* Заголовок */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Дашборд преподавателя</h1>
+            <p className="text-muted-foreground text-sm">{session.user.name}</p>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          <RecalculateButton />
+        </div>
+
+        {/* Сводные карточки */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Студентов</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">{totalStudents}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Средний индекс</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">{avgScore}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Высокая / Средняя</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">
+                <span className="text-green-600">{levelCounts.high}</span>
+                <span className="text-muted-foreground mx-1 text-lg">/</span>
+                <span className="text-yellow-600">{levelCounts.medium}</span>
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Низкая / Критич.</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">
+                <span className="text-orange-600">{levelCounts.low}</span>
+                <span className="text-muted-foreground mx-1 text-lg">/</span>
+                <span className="text-red-600">{levelCounts.critical}</span>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* График */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Динамика вовлечённости (последние 4 недели)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EngagementChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
+          </CardContent>
+        </Card>
+
+        {/* Таблица студентов */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Студенты</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left">
+                    <th className="px-4 py-3 font-medium">Студент</th>
+                    {courses.map((c) => (
+                      <th key={c.id} className="px-4 py-3 font-medium">
+                        {c.name}
+                      </th>
+                    ))}
+                    <th className="px-4 py-3 font-medium">Средний</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={courses.length + 2}
+                        className="text-muted-foreground px-4 py-6 text-center"
+                      >
+                        Нет данных. Нажмите «Пересчитать индексы».
+                      </td>
+                    </tr>
+                  ) : (
+                    students.map((student) => (
+                      <tr key={student.id} className="hover:bg-muted/30 border-b last:border-0">
+                        <td className="px-4 py-3">
+                          <Link
+                            href={`/students/${student.id}`}
+                            className="font-medium hover:underline"
+                          >
+                            {student.name}
+                          </Link>
+                          <p className="text-muted-foreground text-xs">{student.email}</p>
+                        </td>
+                        {courses.map((c) => {
+                          const entry = student.scores.find((s) => s.courseId === c.id);
+                          return (
+                            <td key={c.id} className="px-4 py-3">
+                              {entry ? (
+                                <div className="flex flex-col gap-1">
+                                  <span className="font-medium">{entry.score}</span>
+                                  <span
+                                    className={`w-fit rounded px-1.5 py-0.5 text-xs ${LEVEL_STYLE[entry.level]}`}
+                                  >
+                                    {LEVEL_LABELS[entry.level]}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground">—</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                        <td className="px-4 py-3 font-semibold">{student.avgScore.toFixed(1)}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }
