@@ -118,6 +118,8 @@ docs/wiki/                # Документация → GitHub Wiki
 | v0.3.0 | Engagement score calculation       | ✅ Released |
 | v0.4.0 | Teacher dashboard with charts      | ✅ Released |
 | v0.5.0 | Student profile + activity history | ✅ Released |
+| v0.6.0 | Student personal cabinet + logout  | ✅ Released |
+| v0.7.0 | Interactive dashboard with filters | ✅ Released |
 
 ## 📖 Документация
 
