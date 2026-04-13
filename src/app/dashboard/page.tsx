@@ -169,6 +169,15 @@ export default async function DashboardPage({
   // 7. Уникальные группы для фильтра
   const allGroups = [...new Set(students.map((s) => s.group).filter(Boolean) as string[])].sort();
 
+  // 8. URL для экспорта с текущими фильтрами
+  const exportParams = new URLSearchParams();
+  if (f.course) exportParams.set("course", f.course);
+  if (f.group) exportParams.set("group", f.group);
+  if (f.level) exportParams.set("level", f.level);
+  if (f.search) exportParams.set("search", f.search);
+  if (f.sort) exportParams.set("sort", f.sort);
+  const exportQuery = exportParams.toString() ? `?${exportParams.toString()}` : "";
+
   return (
     <>
       <AppHeader name={session.user.name} email={session.user.email} />
@@ -179,7 +188,27 @@ export default async function DashboardPage({
             <h1 className="text-2xl font-bold">Дашборд преподавателя</h1>
             <p className="text-muted-foreground text-sm">{session.user.name}</p>
           </div>
-          <RecalculateButton />
+          <div className="flex items-center gap-2">
+            <Link
+              href="/import"
+              className="border-input bg-background hover:bg-accent rounded-md border px-3 py-2 text-sm"
+            >
+              Импорт CSV
+            </Link>
+            <a
+              href={`/api/export/dashboard-csv${exportQuery}`}
+              className="border-input bg-background hover:bg-accent rounded-md border px-3 py-2 text-sm"
+            >
+              Скачать CSV
+            </a>
+            <a
+              href={`/api/export/dashboard-pdf${exportQuery}`}
+              className="border-input bg-background hover:bg-accent rounded-md border px-3 py-2 text-sm"
+            >
+              Скачать PDF
+            </a>
+            <RecalculateButton />
+          </div>
         </div>
 
         {/* Сводные карточки */}

@@ -106,9 +106,17 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
         </div>
 
         {/* Заголовок */}
-        <div>
-          <h1 className="text-2xl font-bold">{student.name ?? student.email}</h1>
-          <p className="text-muted-foreground text-sm">{student.email}</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">{student.name ?? student.email}</h1>
+            <p className="text-muted-foreground text-sm">{student.email}</p>
+          </div>
+          <a
+            href={`/api/export/student-pdf?id=${id}`}
+            className="border-input bg-background hover:bg-accent rounded-md border px-3 py-2 text-sm"
+          >
+            Скачать PDF
+          </a>
         </div>
 
         {/* Текущие индексы по курсам */}
