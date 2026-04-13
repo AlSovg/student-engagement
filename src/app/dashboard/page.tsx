@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +9,7 @@ import { type ChartPoint } from "@/components/dashboard/engagement-chart";
 import { EngagementChartWrapper } from "@/components/dashboard/engagement-chart-wrapper";
 import { RecalculateButton } from "@/components/dashboard/recalculate-button";
 import { AppHeader } from "@/components/app-header";
+import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 
 // Цвета бейджей уровня
 const LEVEL_STYLE: Record<EngagementLevel, string> = {
@@ -17,7 +19,17 @@ const LEVEL_STYLE: Record<EngagementLevel, string> = {
   critical: "bg-red-100 text-red-700",
 };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    course?: string;
+    group?: string;
+    level?: string;
+    search?: string;
+    sort?: string;
+  }>;
+}) {
   const session = await auth();
   if (!session) redirect("/login");
 
@@ -48,36 +60,11 @@ export default async function DashboardPage() {
 
   const scores = await db.engagementScore.findMany({
     where: { courseId: { in: courseIds }, period: { gte: from } },
-    include: { user: { select: { id: true, name: true, email: true } } },
+    include: { user: { select: { id: true, name: true, email: true, group: true } } },
     orderBy: { period: "asc" },
   });
 
-  // 3. Данные для графика: avg score per week per course
-  const weekMap = new Map<string, Record<string, { sum: number; count: number }>>();
-  const weekLabels = new Map<string, string>();
-
-  for (const s of scores) {
-    const key = s.period.toISOString();
-    const label = s.period.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
-    weekLabels.set(key, label);
-    if (!weekMap.has(key)) weekMap.set(key, {});
-    const entry = weekMap.get(key)!;
-    const course = courses.find((c) => c.id === s.courseId)!;
-    entry[course.name] ??= { sum: 0, count: 0 };
-    entry[course.name].sum += s.score;
-    entry[course.name].count += 1;
-  }
-
-  const chartData: ChartPoint[] = Array.from(weekMap.entries()).map(([key, byCoarse]) => {
-    const point: ChartPoint = { week: weekLabels.get(key)! };
-    for (const course of courses) {
-      const agg = byCoarse[course.name];
-      point[course.name] = agg ? Math.round((agg.sum / agg.count) * 10) / 10 : 0;
-    }
-    return point;
-  });
-
-  // 4. Данные таблицы: последний score на студента × курс
+  // 3. Данные таблицы: последний score на студента × курс
   const latestMap = new Map<string, (typeof scores)[0]>();
   for (const s of scores) {
     const k = `${s.userId}_${s.courseId}`;
@@ -89,6 +76,7 @@ export default async function DashboardPage() {
     id: string;
     name: string;
     email: string;
+    group: string | null;
     scores: { courseId: string; courseName: string; score: number; level: EngagementLevel }[];
     avgScore: number;
   };
@@ -100,6 +88,7 @@ export default async function DashboardPage() {
         id: s.userId,
         name: s.user.name ?? s.user.email,
         email: s.user.email,
+        group: s.user.group,
         scores: [],
         avgScore: 0,
       });
@@ -113,14 +102,62 @@ export default async function DashboardPage() {
     });
   }
 
-  const students = Array.from(studentMap.values())
-    .map((r) => ({
-      ...r,
-      avgScore: r.scores.reduce((acc, s) => acc + s.score, 0) / (r.scores.length || 1),
-    }))
-    .sort((a, b) => b.avgScore - a.avgScore);
+  const students: StudentRow[] = Array.from(studentMap.values()).map((r) => ({
+    ...r,
+    avgScore: r.scores.reduce((acc, s) => acc + s.score, 0) / (r.scores.length || 1),
+  }));
 
-  // 5. Сводная статистика
+  // 5. Фильтрация и сортировка по searchParams
+  const f = await searchParams;
+
+  let filtered = students;
+  if (f.course) filtered = filtered.filter((s) => s.scores.some((sc) => sc.courseId === f.course));
+  if (f.group) filtered = filtered.filter((s) => s.group === f.group);
+  if (f.level) filtered = filtered.filter((s) => getEngagementLevel(s.avgScore) === f.level);
+  if (f.search) {
+    const q = f.search.toLowerCase();
+    filtered = filtered.filter(
+      (s) => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)
+    );
+  }
+
+  if (f.sort === "name")
+    filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name, "ru"));
+  else if (f.sort === "group")
+    filtered = [...filtered].sort((a, b) => (a.group ?? "").localeCompare(b.group ?? "", "ru"));
+  else filtered = [...filtered].sort((a, b) => b.avgScore - a.avgScore);
+
+  // 6. График: строим по отфильтрованным студентам и курсу
+  const filteredIds = new Set(filtered.map((s) => s.id));
+  const chartCourses = f.course ? courses.filter((c) => c.id === f.course) : courses;
+
+  const weekMap = new Map<string, Record<string, { sum: number; count: number }>>();
+  const weekLabels = new Map<string, string>();
+
+  for (const s of scores) {
+    if (!filteredIds.has(s.userId)) continue;
+    if (f.course && s.courseId !== f.course) continue;
+    const key = s.period.toISOString();
+    const label = s.period.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+    weekLabels.set(key, label);
+    if (!weekMap.has(key)) weekMap.set(key, {});
+    const entry = weekMap.get(key)!;
+    const course = courses.find((c) => c.id === s.courseId)!;
+    entry[course.name] ??= { sum: 0, count: 0 };
+    entry[course.name].sum += s.score;
+    entry[course.name].count += 1;
+  }
+
+  const chartData: ChartPoint[] = Array.from(weekMap.entries()).map(([key, byCoarse]) => {
+    const point: ChartPoint = { week: weekLabels.get(key)! };
+    for (const course of chartCourses) {
+      const agg = byCoarse[course.name];
+      point[course.name] = agg ? Math.round((agg.sum / agg.count) * 10) / 10 : 0;
+    }
+    return point;
+  });
+
+  // 7. Сводная статистика (по всем студентам, без фильтров)
   const totalStudents = students.length;
   const avgScore =
     totalStudents > 0
@@ -128,6 +165,9 @@ export default async function DashboardPage() {
       : 0;
   const levelCounts = { high: 0, medium: 0, low: 0, critical: 0 };
   for (const s of students) levelCounts[getEngagementLevel(s.avgScore)]++;
+
+  // 7. Уникальные группы для фильтра
+  const allGroups = [...new Set(students.map((s) => s.group).filter(Boolean) as string[])].sort();
 
   return (
     <>
@@ -192,7 +232,10 @@ export default async function DashboardPage() {
             <CardTitle>Динамика вовлечённости (последние 4 недели)</CardTitle>
           </CardHeader>
           <CardContent>
-            <EngagementChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
+            <EngagementChartWrapper
+              data={chartData}
+              courseNames={chartCourses.map((c) => c.name)}
+            />
           </CardContent>
         </Card>
 
@@ -201,13 +244,19 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>Студенты</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="space-y-4 p-4">
+            {/* Фильтры */}
+            <Suspense fallback={null}>
+              <DashboardFilters courses={courses} groups={allGroups} />
+            </Suspense>
+
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
                     <th className="px-4 py-3 font-medium">Студент</th>
-                    {courses.map((c) => (
+                    <th className="px-4 py-3 font-medium">Группа</th>
+                    {chartCourses.map((c) => (
                       <th key={c.id} className="px-4 py-3 font-medium">
                         {c.name}
                       </th>
@@ -216,17 +265,19 @@ export default async function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {students.length === 0 ? (
+                  {filtered.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={courses.length + 2}
+                        colSpan={chartCourses.length + 3}
                         className="text-muted-foreground px-4 py-6 text-center"
                       >
-                        Нет данных. Нажмите «Пересчитать индексы».
+                        {students.length === 0
+                          ? "Нет данных. Нажмите «Пересчитать индексы»."
+                          : "Нет студентов, соответствующих фильтрам."}
                       </td>
                     </tr>
                   ) : (
-                    students.map((student) => (
+                    filtered.map((student) => (
                       <tr key={student.id} className="hover:bg-muted/30 border-b last:border-0">
                         <td className="px-4 py-3">
                           <Link
@@ -237,7 +288,8 @@ export default async function DashboardPage() {
                           </Link>
                           <p className="text-muted-foreground text-xs">{student.email}</p>
                         </td>
-                        {courses.map((c) => {
+                        <td className="text-muted-foreground px-4 py-3">{student.group ?? "—"}</td>
+                        {chartCourses.map((c) => {
                           const entry = student.scores.find((s) => s.courseId === c.id);
                           return (
                             <td key={c.id} className="px-4 py-3">

@@ -20,10 +20,12 @@
 
 ## Версии
 
-| Версия | Описание                     | Статус      |
-| ------ | ---------------------------- | ----------- |
-| v0.1.0 | Project setup + Auth         | ✅ Released |
-| v0.2.0 | Activity data generation     | ✅ Released |
-| v0.3.0 | Engagement score calculation | ✅ Released |
-| v0.4.0 | Teacher dashboard            | ✅ Released |
-| v0.5.0 | Student profile              | ✅ Released |
+| Версия | Описание                      | Статус      |
+| ------ | ----------------------------- | ----------- |
+| v0.1.0 | Project setup + Auth          | ✅ Released |
+| v0.2.0 | Activity data generation      | ✅ Released |
+| v0.3.0 | Engagement score calculation  | ✅ Released |
+| v0.4.0 | Teacher dashboard             | ✅ Released |
+| v0.5.0 | Student profile               | ✅ Released |
+| v0.6.0 | Student personal cabinet      | ✅ Released |
+| v0.7.0 | Interactive dashboard filters | ✅ Released |
