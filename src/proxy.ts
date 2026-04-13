@@ -30,6 +30,13 @@ export default auth((req) => {
       return NextResponse.redirect(new URL("/me", req.url));
     }
   }
+
+  if (req.auth && pathname.startsWith("/import")) {
+    const role = req.auth.user?.role;
+    if (role === "STUDENT") {
+      return NextResponse.redirect(new URL("/me", req.url));
+    }
+  }
 });
 
 export const config = {
