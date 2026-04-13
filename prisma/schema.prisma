@@ -58,6 +58,7 @@ model User {
   image            String?
   password         String?
   role             Role              @default(STUDENT)
+  group            String?
   accounts         Account[]
   sessions         Session[]
   activities       Activity[]
