@@ -6,6 +6,7 @@
 
 - [API Documentation](API-Documentation) — описание всех API эндпоинтов
 - [Engagement Algorithm](Engagement-Algorithm) — алгоритм расчёта индекса вовлеченности
+- [Risk Score Algorithm](Risk-Score-Algorithm) — эвристический расчёт риска снижения вовлечённости
 - [Developer Guide](Developer-Guide) — как запустить и разрабатывать проект
 
 ## Стек
@@ -31,3 +32,4 @@
 | v0.7.0 | Interactive dashboard filters | ✅ Released |
 | v0.8.0 | CSV import + CSV/PDF export   | ✅ Released |
 | v0.9.0 | Activity heatmap (12 weeks)   | ✅ Released |
+| v1.0.0 | Heuristic risk score          | ✅ Released |
