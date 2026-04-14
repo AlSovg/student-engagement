@@ -38,6 +38,8 @@
 - 📥 CSV-импорт активности с предпросмотром и построчной валидацией
 - 📤 Экспорт дашборда в CSV и PDF (с учётом фильтров)
 - 📄 Экспорт профиля студента в PDF
+- 🔥 Heatmap активности в стиле GitHub (12 недель)
+- ⚠️ Эвристический риск-скор снижения вовлечённости (0–100%) с факторами
 
 ## 🚀 Быстрый старт
 
@@ -106,7 +108,8 @@ src/
 ├── lib/
 │   ├── auth.ts           # NextAuth конфиг
 │   ├── db.ts             # Prisma singleton
-│   └── engagement.ts     # Расчёт индекса
+│   ├── engagement.ts     # Расчёт индекса вовлечённости
+│   └── risk.ts           # Эвристический риск-скор
 ├── types/                # TypeScript расширения
 └── proxy.ts              # Route protection
 prisma/
@@ -127,6 +130,7 @@ docs/wiki/                # Документация → GitHub Wiki
 | v0.7.0 | Interactive dashboard with filters | ✅ Released |
 | v0.8.0 | CSV import + CSV/PDF export        | ✅ Released |
 | v0.9.0 | Activity heatmap (12 weeks)        | ✅ Released |
+| v1.0.0 | Heuristic risk score               | ✅ Released |
 
 ## 📖 Документация
 
