@@ -44,18 +44,43 @@ async function main() {
   });
 
   const studentData = [
-    { email: "student1@university.edu", name: "Алексей Смирнов", group: "ИСТ-2025" },
-    { email: "student2@university.edu", name: "Мария Иванова", group: "ИСТ-2025" },
-    { email: "student3@university.edu", name: "Дмитрий Козлов", group: "ИСТ-2024" },
-    { email: "student4@university.edu", name: "Анна Новикова", group: "ИСТ-2024" },
-    { email: "student5@university.edu", name: "Сергей Морозов", group: "ИСТ-2025" },
+    {
+      email: "student1@university.edu",
+      name: "Алексей Смирнов",
+      group: "ИСТ-2025",
+      birthDate: new Date("2001-05-12"),
+    },
+    {
+      email: "student2@university.edu",
+      name: "Мария Иванова",
+      group: "ИСТ-2025",
+      birthDate: new Date("2002-09-23"),
+    },
+    {
+      email: "student3@university.edu",
+      name: "Дмитрий Козлов",
+      group: "ИСТ-2024",
+      birthDate: new Date("2000-03-07"),
+    },
+    {
+      email: "student4@university.edu",
+      name: "Анна Новикова",
+      group: "ИСТ-2024",
+      birthDate: new Date("2001-11-30"),
+    },
+    {
+      email: "student5@university.edu",
+      name: "Сергей Морозов",
+      group: "ИСТ-2025",
+      birthDate: new Date("2003-01-15"),
+    },
   ];
 
   const students = await Promise.all(
     studentData.map((s) =>
       prisma.user.upsert({
         where: { email: s.email },
-        update: { group: s.group },
+        update: { group: s.group, birthDate: s.birthDate },
         create: { ...s, password: PASSWORD, role: "STUDENT" },
       })
     )
