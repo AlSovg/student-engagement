@@ -132,7 +132,7 @@ docs/wiki/                # Документация → GitHub Wiki
 | v0.9.0 | Activity heatmap (12 weeks)        | ✅ Released |
 | v1.0.0 | Heuristic risk score               | ✅ Released |
 | v1.1.0 | Course content items (CourseItem)  | ✅ Released |
-| v1.2.0 | Progress bar + student profile     | 🗓 Planned  |
+| v1.2.0 | Progress bar + student profile     | ✅ Released |
 
 ## 📖 Документация
 

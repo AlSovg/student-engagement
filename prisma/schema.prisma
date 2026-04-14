@@ -59,6 +59,7 @@ model User {
   password         String?
   role             Role              @default(STUDENT)
   group            String?
+  birthDate        DateTime?
   accounts         Account[]
   sessions         Session[]
   activities       Activity[]
