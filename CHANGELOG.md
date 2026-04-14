@@ -202,4 +202,4 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 | v0.9.0  | ✅ Activity heatmap (12 weeks)        |
 | v1.0.0  | ✅ Heuristic risk score               |
 | v1.1.0  | ✅ Course content items (CourseItem)  |
-| v1.2.0  | 🗓 Progress bar + student profile     |
+| v1.2.0  | ✅ Progress bar + student profile     |
