@@ -126,6 +126,7 @@ docs/wiki/                # Документация → GitHub Wiki
 | v0.6.0 | Student personal cabinet + logout  | ✅ Released |
 | v0.7.0 | Interactive dashboard with filters | ✅ Released |
 | v0.8.0 | CSV import + CSV/PDF export        | ✅ Released |
+| v0.9.0 | Activity heatmap (12 weeks)        | ✅ Released |
 
 ## 📖 Документация
 

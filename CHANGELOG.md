@@ -10,6 +10,19 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ---
 
+## [0.9.0] — 2026-04-14
+
+### Added
+
+- Heatmap активности на странице профиля студента `/students/[id]` и личном кабинете `/me`
+- Календарная сетка 12 недель × 7 дней в стиле GitHub Contributions
+- Цветовая шкала по интенсивности: 0 → серый, 1–2 → светло-зелёный, 3–5 → зелёный, 6–9 → насыщенный, 10+ → тёмно-зелёный
+- Тултип с датой и количеством событий на каждой ячейке
+- Метки месяцев над колонками, дней недели (Пн/Ср/Пт) слева, легенда снизу
+- График динамики и heatmap объединены в единый блок: график (3fr) слева, heatmap (1fr) справа
+
+---
+
 ## [0.8.0] — 2026-04-14
 
 ### Added
@@ -146,3 +159,4 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 | v0.6.0  | ✅ Student personal cabinet + logout  |
 | v0.7.0  | ✅ Interactive dashboard filters      |
 | v0.8.0  | ✅ CSV import + CSV/PDF export        |
+| v0.9.0  | ✅ Activity heatmap (12 weeks)        |
