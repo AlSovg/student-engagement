@@ -59,6 +59,7 @@ model User {
   password         String?
   role             Role              @default(STUDENT)
   group            String?
+  birthDate        DateTime?
   accounts         Account[]
   sessions         Session[]
   activities       Activity[]
@@ -76,6 +77,7 @@ model Course {
   activities       Activity[]
   enrollments      Enrollment[]
   engagementScores EngagementScore[]
+  items            CourseItem[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -100,15 +102,35 @@ enum ActivityType {
   VIDEO_WATCH
 }
 
+enum CourseItemType {
+  VIDEO
+  MATERIAL
+  ASSIGNMENT
+  QUIZ
+}
+
+model CourseItem {
+  id         String         @id @default(cuid())
+  courseId   String
+  course     Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title      String
+  type       CourseItemType
+  order      Int
+  createdAt  DateTime       @default(now())
+  activities Activity[]
+}
+
 model Activity {
-  id        String       @id @default(cuid())
-  userId    String
-  courseId  String
-  type      ActivityType
-  metadata  Json?
-  createdAt DateTime     @default(now())
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course    Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id           String       @id @default(cuid())
+  userId       String
+  courseId     String
+  courseItemId String?
+  type         ActivityType
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseItem   CourseItem?  @relation(fields: [courseItemId], references: [id], onDelete: SetNull)
 }
 
 model EngagementScore {

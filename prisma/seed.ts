@@ -44,18 +44,43 @@ async function main() {
   });
 
   const studentData = [
-    { email: "student1@university.edu", name: "Алексей Смирнов", group: "ИСТ-2025" },
-    { email: "student2@university.edu", name: "Мария Иванова", group: "ИСТ-2025" },
-    { email: "student3@university.edu", name: "Дмитрий Козлов", group: "ИСТ-2024" },
-    { email: "student4@university.edu", name: "Анна Новикова", group: "ИСТ-2024" },
-    { email: "student5@university.edu", name: "Сергей Морозов", group: "ИСТ-2025" },
+    {
+      email: "student1@university.edu",
+      name: "Алексей Смирнов",
+      group: "ИСТ-2025",
+      birthDate: new Date("2001-05-12"),
+    },
+    {
+      email: "student2@university.edu",
+      name: "Мария Иванова",
+      group: "ИСТ-2025",
+      birthDate: new Date("2002-09-23"),
+    },
+    {
+      email: "student3@university.edu",
+      name: "Дмитрий Козлов",
+      group: "ИСТ-2024",
+      birthDate: new Date("2000-03-07"),
+    },
+    {
+      email: "student4@university.edu",
+      name: "Анна Новикова",
+      group: "ИСТ-2024",
+      birthDate: new Date("2001-11-30"),
+    },
+    {
+      email: "student5@university.edu",
+      name: "Сергей Морозов",
+      group: "ИСТ-2025",
+      birthDate: new Date("2003-01-15"),
+    },
   ];
 
   const students = await Promise.all(
     studentData.map((s) =>
       prisma.user.upsert({
         where: { email: s.email },
-        update: { group: s.group },
+        update: { group: s.group, birthDate: s.birthDate },
         create: { ...s, password: PASSWORD, role: "STUDENT" },
       })
     )
@@ -98,7 +123,121 @@ async function main() {
     }
   }
 
-  // 4. Activities — last 4 weeks
+  // 4. CourseItems
+  type CourseItemType = "VIDEO" | "MATERIAL" | "ASSIGNMENT" | "QUIZ";
+
+  const courseItemsData: Record<
+    string,
+    { id: string; title: string; type: CourseItemType; order: number }[]
+  > = {
+    "course-is-101": [
+      {
+        id: "item-is-mat-1",
+        title: "Лекция 1: Введение в информационные системы",
+        type: "MATERIAL",
+        order: 1,
+      },
+      {
+        id: "item-is-mat-2",
+        title: "Лекция 2: Архитектура информационных систем",
+        type: "MATERIAL",
+        order: 2,
+      },
+      { id: "item-is-mat-3", title: "Лекция 3: Базы данных и СУБД", type: "MATERIAL", order: 3 },
+      { id: "item-is-mat-4", title: "Лекция 4: Проектирование ИС", type: "MATERIAL", order: 4 },
+      { id: "item-is-vid-1", title: "Видео: Обзор информационных систем", type: "VIDEO", order: 5 },
+      {
+        id: "item-is-vid-2",
+        title: "Видео: Клиент-серверная архитектура",
+        type: "VIDEO",
+        order: 6,
+      },
+      {
+        id: "item-is-asgn-1",
+        title: "Практика 1: Анализ предметной области",
+        type: "ASSIGNMENT",
+        order: 7,
+      },
+      { id: "item-is-asgn-2", title: "Практика 2: SQL-запросы", type: "ASSIGNMENT", order: 8 },
+      {
+        id: "item-is-quiz-1",
+        title: "Тест 1: Основы информационных систем",
+        type: "QUIZ",
+        order: 9,
+      },
+      { id: "item-is-quiz-2", title: "Тест 2: Архитектурные паттерны", type: "QUIZ", order: 10 },
+    ],
+    "course-da-201": [
+      {
+        id: "item-da-mat-1",
+        title: "Лекция 1: Введение в Data Science",
+        type: "MATERIAL",
+        order: 1,
+      },
+      { id: "item-da-mat-2", title: "Лекция 2: Основы статистики", type: "MATERIAL", order: 2 },
+      { id: "item-da-mat-3", title: "Лекция 3: Методы кластеризации", type: "MATERIAL", order: 3 },
+      { id: "item-da-mat-4", title: "Лекция 4: Нейронные сети", type: "MATERIAL", order: 4 },
+      { id: "item-da-vid-1", title: "Видео: Python для анализа данных", type: "VIDEO", order: 5 },
+      { id: "item-da-vid-2", title: "Видео: Pandas и NumPy", type: "VIDEO", order: 6 },
+      {
+        id: "item-da-asgn-1",
+        title: "Практика 1: Разведочный анализ данных (EDA)",
+        type: "ASSIGNMENT",
+        order: 7,
+      },
+      {
+        id: "item-da-asgn-2",
+        title: "Практика 2: Построение модели",
+        type: "ASSIGNMENT",
+        order: 8,
+      },
+      { id: "item-da-quiz-1", title: "Тест 1: Основы статистики", type: "QUIZ", order: 9 },
+      {
+        id: "item-da-quiz-2",
+        title: "Тест 2: Алгоритмы машинного обучения",
+        type: "QUIZ",
+        order: 10,
+      },
+    ],
+  };
+
+  // Upsert course items
+  for (const [courseId, items] of Object.entries(courseItemsData)) {
+    for (const item of items) {
+      await prisma.courseItem.upsert({
+        where: { id: item.id },
+        update: { title: item.title, type: item.type, order: item.order },
+        create: { courseId, ...item },
+      });
+    }
+  }
+
+  // Build lookup: courseId + activityType → courseItemIds
+  const activityTypeToCourseItemType: Partial<Record<string, CourseItemType>> = {
+    VIDEO_WATCH: "VIDEO",
+    MATERIAL_VIEW: "MATERIAL",
+    ASSIGNMENT_SUBMIT: "ASSIGNMENT",
+    QUIZ_COMPLETE: "QUIZ",
+  };
+
+  // courseId → CourseItemType → item ids
+  const itemIdsByType: Record<string, Record<CourseItemType, string[]>> = {};
+  for (const [courseId, items] of Object.entries(courseItemsData)) {
+    itemIdsByType[courseId] = { VIDEO: [], MATERIAL: [], ASSIGNMENT: [], QUIZ: [] };
+    for (const item of items) {
+      itemIdsByType[courseId][item.type].push(item.id);
+    }
+  }
+
+  function pickItemId(courseId: string, activityType: string): string | null {
+    const cit = activityTypeToCourseItemType[activityType];
+    if (!cit) return null;
+    const ids = itemIdsByType[courseId]?.[cit] ?? [];
+    if (ids.length === 0) return null;
+    return ids[Math.floor(Math.random() * ids.length)];
+  }
+
+  // 5. Activities — last 4 weeks
   type ActivityType =
     | "LOGIN"
     | "MATERIAL_VIEW"
@@ -130,6 +269,7 @@ async function main() {
   const activitiesToCreate: {
     userId: string;
     courseId: string;
+    courseItemId: string | null;
     type: ActivityType;
     createdAt: Date;
   }[] = [];
@@ -140,10 +280,12 @@ async function main() {
         const count = randomBetween(5, 12);
         for (let i = 0; i < count; i++) {
           const daysOffset = week * 7 + randomBetween(0, 6);
+          const type = pickActivity();
           activitiesToCreate.push({
             userId: student.id,
             courseId: course.id,
-            type: pickActivity(),
+            courseItemId: pickItemId(course.id, type),
+            type,
             createdAt: daysAgo(daysOffset),
           });
         }
