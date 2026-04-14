@@ -10,6 +10,27 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ---
 
+## [0.8.0] — 2026-04-14
+
+### Added
+
+- CSV-импорт активности `/import`: загрузка файла → предпросмотр с построчной валидацией → подтверждение → пересчёт индексов
+- Валидация строк при импорте: email существует как STUDENT, тип активности из enum, курс существует и студент записан, корректный ISO-datetime
+- Экспорт дашборда в CSV (`GET /api/export/dashboard-csv`) с учётом активных фильтров, BOM-префикс для Excel
+- Экспорт дашборда в PDF (`GET /api/export/dashboard-pdf`) — общая статистика + отфильтрованная таблица студентов (landscape A4)
+- Экспорт профиля студента в PDF (`GET /api/export/student-pdf?id=`) — индексы по курсам + история активности
+- Кнопки «Импорт CSV», «Скачать CSV», «Скачать PDF» на дашборде преподавателя
+- Кнопка «Скачать PDF» на странице профиля студента
+- PDF-компоненты `DashboardReport` и `StudentReport` (`@react-pdf/renderer`) с кириллическим шрифтом Roboto
+
+### Technical
+
+- `papaparse` — парсинг CSV в Server Action
+- `@react-pdf/renderer` — серверная генерация PDF (`runtime = "nodejs"`)
+- PDF-компоненты типизированы через `DocumentBaseProps` (без `as any`)
+
+---
+
 ## [0.7.0] — 2026-04-13
 
 ### Added
@@ -122,3 +143,6 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 | v0.3.0  | ✅ Engagement score calculation       |
 | v0.4.0  | ✅ Teacher dashboard with charts      |
 | v0.5.0  | ✅ Student profile + activity history |
+| v0.6.0  | ✅ Student personal cabinet + logout  |
+| v0.7.0  | ✅ Interactive dashboard filters      |
+| v0.8.0  | ✅ CSV import + CSV/PDF export        |
