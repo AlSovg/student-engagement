@@ -9,6 +9,7 @@ import { type ScorePoint } from "@/components/students/score-chart";
 import { ActivityHeatmapWrapper } from "@/components/students/activity-heatmap-wrapper";
 import { ActivityType } from "@/generated/prisma/enums";
 import { AppHeader } from "@/components/app-header";
+import { calculateRisk, RISK_LEVEL_LABELS, RISK_LEVEL_STYLE } from "@/lib/risk";
 
 const ACTIVITY_LABELS: Record<ActivityType, string> = {
   LOGIN: "Вход в систему",
@@ -110,6 +111,11 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
     take: 60,
   });
 
+  // Риск снижения вовлечённости
+  const scoreHistory = scores.map((s) => ({ score: s.score, period: s.period }));
+  const activityForRisk = activities.map((a) => ({ type: a.type, createdAt: a.createdAt }));
+  const risk = calculateRisk(scoreHistory, activityForRisk);
+
   return (
     <>
       <AppHeader name={session.user.name} email={session.user.email} />
@@ -162,6 +168,29 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
             );
           })}
         </div>
+
+        {/* Риск */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Риск снижения вовлечённости</span>
+              <span
+                className={`rounded px-2.5 py-1 text-sm font-medium ${RISK_LEVEL_STYLE[risk.level]}`}
+              >
+                {RISK_LEVEL_LABELS[risk.level]} · {risk.score}%
+              </span>
+            </CardTitle>
+          </CardHeader>
+          {risk.factors.length > 0 && (
+            <CardContent>
+              <ul className="text-muted-foreground space-y-1 text-sm">
+                {risk.factors.map((f, i) => (
+                  <li key={i}>• {f}</li>
+                ))}
+              </ul>
+            </CardContent>
+          )}
+        </Card>
 
         {/* График + Heatmap */}
         <Card>

@@ -8,6 +8,14 @@ import { type ScorePoint } from "@/components/students/score-chart";
 import { ActivityHeatmapWrapper } from "@/components/students/activity-heatmap-wrapper";
 import { ActivityType } from "@/generated/prisma/enums";
 import { AppHeader } from "@/components/app-header";
+import { calculateRisk, RISK_LEVEL_LABELS, RISK_LEVEL_STYLE, type RiskLevel } from "@/lib/risk";
+
+const RISK_MESSAGE: Record<RiskLevel, string> = {
+  low: "Отличная работа! Вы активно участвуете в курсах и своевременно выполняете задания. Так держать!",
+  medium:
+    "Есть куда расти. Старайтесь чаще заходить на платформу и не откладывайте сдачу заданий — это заметно улучшит ваш показатель.",
+  high: "Уровень вовлечённости вызывает беспокойство. Постарайтесь проявить больше активности: выполняйте задания, просматривайте материалы и участвуйте в обсуждениях.",
+};
 
 const ACTIVITY_LABELS: Record<ActivityType, string> = {
   LOGIN: "Вход в систему",
@@ -99,6 +107,11 @@ export default async function MePage() {
     take: 60,
   });
 
+  // Риск снижения вовлечённости
+  const scoreHistory = scores.map((s) => ({ score: s.score, period: s.period }));
+  const activityForRisk = activities.map((a) => ({ type: a.type, createdAt: a.createdAt }));
+  const risk = calculateRisk(scoreHistory, activityForRisk);
+
   return (
     <>
       <AppHeader name={session.user.name} email={session.user.email} />
@@ -136,6 +149,23 @@ export default async function MePage() {
             );
           })}
         </div>
+
+        {/* Риск */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Уровень риска</span>
+              <span
+                className={`rounded px-2.5 py-1 text-sm font-medium ${RISK_LEVEL_STYLE[risk.level]}`}
+              >
+                {RISK_LEVEL_LABELS[risk.level]} · {risk.score}%
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">{RISK_MESSAGE[risk.level]}</p>
+          </CardContent>
+        </Card>
 
         {/* График + Heatmap */}
         <Card>

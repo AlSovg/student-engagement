@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getEngagementLevel, LEVEL_LABELS, type EngagementLevel } from "@/lib/engagement";
+import { calculateRisk, RISK_LEVEL_LABELS, RISK_LEVEL_STYLE, type RiskResult } from "@/lib/risk";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartPoint } from "@/components/dashboard/engagement-chart";
 import { EngagementChartWrapper } from "@/components/dashboard/engagement-chart-wrapper";
@@ -79,9 +80,10 @@ export default async function DashboardPage({
     group: string | null;
     scores: { courseId: string; courseName: string; score: number; level: EngagementLevel }[];
     avgScore: number;
+    risk: RiskResult;
   };
 
-  const studentMap = new Map<string, StudentRow>();
+  const studentMap = new Map<string, Omit<StudentRow, "risk">>();
   for (const s of latestMap.values()) {
     if (!studentMap.has(s.userId)) {
       studentMap.set(s.userId, {
@@ -102,10 +104,31 @@ export default async function DashboardPage({
     });
   }
 
-  const students: StudentRow[] = Array.from(studentMap.values()).map((r) => ({
-    ...r,
-    avgScore: r.scores.reduce((acc, s) => acc + s.score, 0) / (r.scores.length || 1),
-  }));
+  // 4. Активность за последние 2 недели для расчёта риска
+  const riskFrom = new Date();
+  riskFrom.setUTCDate(riskFrom.getUTCDate() - 14);
+  const riskActivities = await db.activity.findMany({
+    where: { courseId: { in: courseIds }, createdAt: { gte: riskFrom } },
+    select: { userId: true, type: true, createdAt: true },
+  });
+  const riskActsByStudent = new Map<string, { type: string; createdAt: Date }[]>();
+  for (const a of riskActivities) {
+    if (!riskActsByStudent.has(a.userId)) riskActsByStudent.set(a.userId, []);
+    riskActsByStudent.get(a.userId)!.push({ type: a.type, createdAt: a.createdAt });
+  }
+
+  // История недельных средних по студенту (для риска)
+  const weeklyByStudent = new Map<string, { score: number; period: Date }[]>();
+  for (const s of scores) {
+    if (!weeklyByStudent.has(s.userId)) weeklyByStudent.set(s.userId, []);
+    weeklyByStudent.get(s.userId)!.push({ score: s.score, period: s.period });
+  }
+
+  const students: StudentRow[] = Array.from(studentMap.values()).map((r) => {
+    const avgScore = r.scores.reduce((acc, s) => acc + s.score, 0) / (r.scores.length || 1);
+    const risk = calculateRisk(weeklyByStudent.get(r.id) ?? [], riskActsByStudent.get(r.id) ?? []);
+    return { ...r, avgScore, risk };
+  });
 
   // 5. Фильтрация и сортировка по searchParams
   const f = await searchParams;
@@ -291,13 +314,14 @@ export default async function DashboardPage({
                       </th>
                     ))}
                     <th className="px-4 py-3 font-medium">Средний</th>
+                    <th className="px-4 py-3 font-medium">Риск</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={chartCourses.length + 3}
+                        colSpan={chartCourses.length + 4}
                         className="text-muted-foreground px-4 py-6 text-center"
                       >
                         {students.length === 0
@@ -338,6 +362,18 @@ export default async function DashboardPage({
                           );
                         })}
                         <td className="px-4 py-3 font-semibold">{student.avgScore.toFixed(1)}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex flex-col gap-1">
+                            <span
+                              className={`w-fit rounded px-1.5 py-0.5 text-xs ${RISK_LEVEL_STYLE[student.risk.level]}`}
+                            >
+                              {RISK_LEVEL_LABELS[student.risk.level]}
+                            </span>
+                            <span className="text-muted-foreground text-xs">
+                              {student.risk.score}%
+                            </span>
+                          </div>
+                        </td>
                       </tr>
                     ))
                   )}
