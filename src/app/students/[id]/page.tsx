@@ -6,6 +6,7 @@ import { getEngagementLevel, LEVEL_LABELS } from "@/lib/engagement";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreChartWrapper } from "@/components/students/score-chart-wrapper";
 import { type ScorePoint } from "@/components/students/score-chart";
+import { ActivityHeatmapWrapper } from "@/components/students/activity-heatmap-wrapper";
 import { ActivityType } from "@/generated/prisma/enums";
 import { AppHeader } from "@/components/app-header";
 
@@ -83,6 +84,21 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
     }
   }
 
+  // Данные для heatmap (12 недель = 84 дня)
+  const heatmapFrom = new Date();
+  heatmapFrom.setUTCDate(heatmapFrom.getUTCDate() - 83);
+
+  const heatmapRecords = await db.activity.findMany({
+    where: { userId: id, courseId: { in: courseIds }, createdAt: { gte: heatmapFrom } },
+    select: { createdAt: true },
+  });
+
+  const heatmapData: Record<string, number> = {};
+  for (const r of heatmapRecords) {
+    const key = r.createdAt.toISOString().slice(0, 10);
+    heatmapData[key] = (heatmapData[key] ?? 0) + 1;
+  }
+
   // История активности за последние 4 недели
   const activityFrom = new Date();
   activityFrom.setUTCDate(activityFrom.getUTCDate() - 28);
@@ -147,14 +163,18 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
           })}
         </div>
 
-        {/* График динамики */}
+        {/* График + Heatmap */}
         <Card>
-          <CardHeader>
-            <CardTitle>Динамика вовлечённости (8 недель)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ScoreChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
-          </CardContent>
+          <div className="grid grid-cols-1 divide-y lg:grid-cols-[3fr_1fr] lg:divide-x lg:divide-y-0">
+            <div className="p-6">
+              <p className="mb-4 text-lg font-semibold">Динамика вовлечённости (8 недель)</p>
+              <ScoreChartWrapper data={chartData} courseNames={courses.map((c) => c.name)} />
+            </div>
+            <div className="p-6">
+              <p className="mb-4 text-lg font-semibold">Активность (последние 12 недель)</p>
+              <ActivityHeatmapWrapper data={heatmapData} />
+            </div>
+          </div>
         </Card>
 
         {/* История активности */}
