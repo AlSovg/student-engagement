@@ -29,3 +29,4 @@
 | v0.5.0 | Student profile               | ✅ Released |
 | v0.6.0 | Student personal cabinet      | ✅ Released |
 | v0.7.0 | Interactive dashboard filters | ✅ Released |
+| v0.8.0 | CSV import + CSV/PDF export   | ✅ Released |
