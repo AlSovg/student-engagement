@@ -106,7 +106,7 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
 
   const activities = await db.activity.findMany({
     where: { userId: id, courseId: { in: courseIds }, createdAt: { gte: activityFrom } },
-    include: { course: true },
+    include: { course: true, courseItem: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
     take: 60,
   });
@@ -218,13 +218,14 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
                   <tr className="border-b text-left">
                     <th className="px-4 py-3 font-medium">Дата</th>
                     <th className="px-4 py-3 font-medium">Тип</th>
+                    <th className="px-4 py-3 font-medium">Элемент курса</th>
                     <th className="px-4 py-3 font-medium">Курс</th>
                   </tr>
                 </thead>
                 <tbody>
                   {activities.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className="text-muted-foreground px-4 py-6 text-center">
+                      <td colSpan={4} className="text-muted-foreground px-4 py-6 text-center">
                         Нет активности за последние 4 недели
                       </td>
                     </tr>
@@ -240,6 +241,13 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
                           })}
                         </td>
                         <td className="px-4 py-2.5">{ACTIVITY_LABELS[a.type]}</td>
+                        <td className="px-4 py-2.5">
+                          {a.courseItem ? (
+                            a.courseItem.title
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
                         <td className="text-muted-foreground px-4 py-2.5">{a.course.name}</td>
                       </tr>
                     ))

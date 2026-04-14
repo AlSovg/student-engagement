@@ -10,6 +10,18 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 
 ---
 
+## [1.1.0] — 2026-04-14
+
+### Added
+
+- Новая модель `CourseItem` — элементы дисциплины (лекции, видео, практики, тесты) с порядком и типом
+- Enum `CourseItemType`: `VIDEO`, `MATERIAL`, `ASSIGNMENT`, `QUIZ`
+- 10 элементов для каждого курса в seed: IS-101 и DA-201 (лекции, видео, практики, тесты)
+- Поле `Activity.courseItemId` — каждое событие (кроме LOGIN и DISCUSSION_POST) теперь привязано к конкретному элементу курса
+- Столбец «Элемент курса» в таблице истории активности на страницах `/students/[id]` и `/me`
+
+---
+
 ## [1.0.0] — 2026-04-14
 
 ### Added
@@ -178,3 +190,5 @@ Versioning: [Semantic Versioning](https://semver.org/) — minor bump per MVP mi
 | v0.8.0  | ✅ CSV import + CSV/PDF export        |
 | v0.9.0  | ✅ Activity heatmap (12 weeks)        |
 | v1.0.0  | ✅ Heuristic risk score               |
+| v1.1.0  | ✅ Course content items (CourseItem)  |
+| v1.2.0  | 🗓 Progress bar + student profile     |
